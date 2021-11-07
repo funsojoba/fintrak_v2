@@ -1,0 +1,25 @@
+version: '3.8'
+
+x-db-envs: &db-envs
+  POSTGRES_DB: fintrak_app
+  POSTGRES_PASSWORD: admin
+  POSTGRES_USER: postgres
+
+
+services: 
+    db:
+      image: postgres:13-alpine
+      environment:
+        <<: *db-envs
+      volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    api:
+        build: .
+        volumes: 
+            - .:/app
+        ports: 
+            - 18000:8000
+        image: api:app
+        container_name: fintrak_container
+        command: python manage.py runserver 0.0.0.0:18000
+
